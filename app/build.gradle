@@ -1,0 +1,111 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.compose)
+}
+
+android {
+    compileSdk libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        applicationId "com.example.mytripactions"
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSkd.get().toInteger()
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    buildFeatures {
+        compose true
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    namespace 'com.example.mytripactions'
+}
+
+dependencies {
+    implementation libs.core.ktx
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.lifecycle.runtime.compose.android
+
+    //Compose
+    implementation platform(libs.compose.bom)
+
+    implementation libs.activity.compose
+    implementation libs.compose.runtime.livedata
+    implementation libs.compose.ui
+    implementation libs.compose.ui.preview
+    implementation libs.material3
+    implementation libs.lifecycle.viewmodel.compose
+    implementation libs.lifecycle.viewmodel.ktx
+    implementation libs.navigation.compose
+
+    // Coil
+    implementation libs.coil.compose
+
+    // Retrofit + GSON
+    implementation libs.retrofit
+    implementation libs.retrofit.adapters.gson
+    implementation libs.retrofit.adapters.rxJava3
+
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+    ksp libs.hilt.ext.compiler
+
+    // Coroutines
+    implementation libs.coroutines.core
+
+    // Fragment
+    implementation libs.fragment.ktx
+
+    // Rx
+    implementation libs.rxjava
+    implementation libs.rxjava.android
+    implementation libs.rxjava.rxkotlin
+
+    // Room
+    implementation libs.room.runtime
+    implementation libs.room.ktx
+    ksp libs.room.compiler
+
+    debugImplementation libs.compose.ui.tooling
+    debugImplementation libs.compose.ui.manifest
+
+    testImplementation libs.junit
+    testImplementation libs.mockk
+    testImplementation libs.coroutines.test
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+    androidTestImplementation libs.compose.ui.junit
+}
