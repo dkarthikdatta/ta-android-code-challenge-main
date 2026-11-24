@@ -1,6 +1,7 @@
 package com.example.mytripactions.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,19 +27,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mytripactions.R
 import com.example.mytripactions.api.NewsArticleDto
 import com.example.mytripactions.api.NewsResponse
 import com.example.mytripactions.compose.TATheme
+import com.example.mytripactions.compose.typography
 import com.example.mytripactions.vm.NewsUiState
 
 @Composable
-fun NewsScreen(newsUiState: NewsUiState, onLoadMore: () -> Unit = {}) {
+fun NewsScreen(
+    newsUiState: NewsUiState,
+    onLoadMore: () -> Unit = {},
+    onArticleClick: (NewsArticleDto) -> Unit = {}
+) {
     val listState = rememberLazyListState()
 
     val shouldLoadMore = remember {
@@ -64,7 +68,8 @@ fun NewsScreen(newsUiState: NewsUiState, onLoadMore: () -> Unit = {}) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(R.string.app_name), fontSize = 16.sp, fontWeight = FontWeight.Bold
+            text = stringResource(R.string.app_name),
+            style = MaterialTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.size(16.dp))
 
@@ -101,31 +106,40 @@ fun NewsScreen(newsUiState: NewsUiState, onLoadMore: () -> Unit = {}) {
                 ) {
                     items(
                         items = newsUiState.data.articles,
-                        key = { article -> article.url ?: article.title.orEmpty() }) { article ->
-                        if (LocalInspectionMode.current) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_amenity_virtuoso),
-                                contentDescription = article.title,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(180.dp),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
-                            AsyncImage(
-                                model = article.urlToImage,
-                                contentDescription = article.title,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(180.dp),
-                                contentScale = ContentScale.Crop,
-                                error = painterResource(R.drawable.ic_breaking)
+                        key = { article -> article.url ?: article.title.orEmpty() }
+                    ) { article ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onArticleClick(article) }
+                                .padding(vertical = 8.dp)
+                        ) {
+                            if (LocalInspectionMode.current) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_amenity_virtuoso),
+                                    contentDescription = article.title,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(180.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                AsyncImage(
+                                    model = article.urlToImage,
+                                    contentDescription = article.title,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(180.dp),
+                                    contentScale = ContentScale.Crop,
+                                    error = painterResource(R.drawable.ic_breaking)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = article.title.orEmpty(),
+                                modifier = Modifier.padding(vertical = 4.dp)
                             )
                         }
-                        Text(
-                            text = article.title.orEmpty(),
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        )
                     }
                 }
             }

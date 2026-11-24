@@ -1,7 +1,5 @@
 package com.example.mytripactions.vm
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mytripactions.api.NewsArticleDto
@@ -27,6 +25,8 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
     private var currentPage = 1
     private var isFetching = false
     private val allArticles = mutableListOf<NewsArticleDto>()
+
+    var selectedArticle: NewsArticleDto? = null
 
     private val _newsResult = MutableStateFlow<NewsUiState>(NewsUiState.Loading)
     val newsResult: StateFlow<NewsUiState> = _newsResult.asStateFlow()
