@@ -45,21 +45,36 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
         isFetching = true
         currentPage = 1
         viewModelScope.launch {
+//            if (allArticles.isEmpty()) {
+//                _newsResult.value = NewsUiState.Loading
+//            }
+//            newsRepository.getNews(page = currentPage)
+//                .catch { e ->
+//                    isFetching = false
+//                    _newsResult.value = NewsUiState.Error(e.localizedMessage ?: "Unknown error")
+//                }
+//                .collect { response ->
+//                    isFetching = false
+//                    allArticles.clear()
+//                    allArticles.addAll(response.articles)
+//                    _newsResult.value =
+//                        NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
+//                }
+
             if (allArticles.isEmpty()) {
                 _newsResult.value = NewsUiState.Loading
             }
-            newsRepository.getNews(page = currentPage)
-                .catch { e ->
-                    isFetching = false
-                    _newsResult.value = NewsUiState.Error(e.localizedMessage ?: "Unknown error")
-                }
-                .collect { response ->
-                    isFetching = false
-                    allArticles.clear()
-                    allArticles.addAll(response.articles)
-                    _newsResult.value =
-                        NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
-                }
+            try {
+                val response = newsRepository.getNewsSuspendly(page = currentPage)
+                allArticles.clear()
+                allArticles.addAll(response.articles)
+                _newsResult.value =
+                    NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
+            } catch (e: Exception) {
+                _newsResult.value = NewsUiState.Error(e.localizedMessage ?: "Error in call")
+            } finally {
+                isFetching = false
+            }
         }
     }
 
@@ -68,19 +83,32 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
         isFetching = true
         currentPage++
         viewModelScope.launch {
-            newsRepository.getNews(page = currentPage)
-                .catch { e ->
-                    isFetching = false
-                    currentPage--
-                }
-                .collect { response ->
-                    isFetching = false
-                    if (response.articles.isNotEmpty()) {
-                        allArticles.addAll(response.articles)
-                        _newsResult.value =
-                            NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
-                    }
-                }
+//            newsRepository.getNews(page = currentPage)
+//                .catch { e ->
+//                    isFetching = false
+//                    currentPage--
+//                }
+//                .collect { response ->
+//                    isFetching = false
+//                    if (response.articles.isNotEmpty()) {
+//                        allArticles.addAll(response.articles)
+//                        _newsResult.value =
+//                            NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
+//                    }
+//                }
+
+            try {
+                val response = newsRepository.getNewsSuspendly(page = currentPage)
+                allArticles.addAll(response.articles)
+                _newsResult.value =
+                    NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
+
+            } catch (e: Exception) {
+                _newsResult.value = NewsUiState.Error(e.localizedMessage ?: "Error in call")
+                currentPage--
+            } finally {
+                isFetching = false
+            }
         }
     }
 }

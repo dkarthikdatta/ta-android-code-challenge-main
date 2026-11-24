@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TATheme {
-                NewsNavGraph(newsViewModel = newsViewModel)
+                NewsNavGraph(viewModel = newsViewModel)
             }
         }
     }
