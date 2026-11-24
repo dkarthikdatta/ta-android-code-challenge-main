@@ -5,4 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
     fun getNews(country: String = "us", pageSize: Int = 10, page: Int = 1): Flow<NewsResponse>
+
+    suspend fun getNewsSuspendly(
+        country: String = "us", pageSize: Int = 10, page: Int = 1
+    ): NewsResponse
+
 }

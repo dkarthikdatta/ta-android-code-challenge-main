@@ -11,4 +11,12 @@ class NewsRepositoryImpl @Inject constructor(private val newsApi: NewsApi) : New
     override fun getNews(country: String, pageSize: Int, page: Int): Flow<NewsResponse> = flow {
         emit(newsApi.getNews(country, pageSize, page))
     }
+
+    override suspend fun getNewsSuspendly(
+        country: String,
+        pageSize: Int,
+        page: Int
+    ): NewsResponse {
+        return newsApi.getNews(country, pageSize, page)
+    }
 }

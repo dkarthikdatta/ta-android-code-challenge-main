@@ -1,5 +1,7 @@
 package com.example.mytripactions.vm
 
+import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mytripactions.api.NewsArticleDto
@@ -50,8 +52,23 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
                     isFetching = false
                     allArticles.clear()
                     allArticles.addAll(response.articles)
-                    _newsResult.value = NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
+                    _newsResult.value =
+                        NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
                 }
+
+//            if (allArticles.isEmpty()) {
+//                _newsResult.value = NewsUiState.Loading
+//            }
+//            try {
+//                val response = newsRepository.getNewsSuspendly(page = currentPage)
+//                allArticles.clear()
+//                allArticles.addAll(response.articles)
+//                _newsResult.value = NewsUiState.Success(NewsResponse(allArticles.toList()))
+//            } catch (e: Exception) {
+//                _newsResult.value = NewsUiState.Error(e.localizedMessage)
+//            } finally {
+//                isFetching = false
+//            }
         }
     }
 
@@ -69,9 +86,22 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
                     isFetching = false
                     if (response.articles.isNotEmpty()) {
                         allArticles.addAll(response.articles)
-                        _newsResult.value = NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
+                        _newsResult.value =
+                            NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
                     }
                 }
+//            Log.d("Pagination", "test")
+
+
+//            try {
+//                val response = newsRepository.getNewsSuspendly(page = currentPage)
+//                allArticles.addAll(response.articles)
+//                _newsResult.value = NewsUiState.Success(NewsResponse(allArticles.toList()))
+//            } catch (e: Exception) {
+//                currentPage--
+//            } finally {
+//                isFetching = false
+//            }
         }
     }
 }
