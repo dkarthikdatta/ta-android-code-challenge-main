@@ -26,7 +26,12 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
     private var isFetching = false
     private val allArticles = mutableListOf<NewsArticleDto>()
 
-    var selectedArticle: NewsArticleDto? = null
+    private val _selectedArticle = MutableStateFlow<NewsArticleDto?>(null)
+    val selectedArticle: StateFlow<NewsArticleDto?> = _selectedArticle.asStateFlow()
+
+    fun selectArticle(article: NewsArticleDto) {
+        _selectedArticle.value = article
+    }
 
     private val _newsResult = MutableStateFlow<NewsUiState>(NewsUiState.Loading)
     val newsResult: StateFlow<NewsUiState> = _newsResult.asStateFlow()
@@ -55,20 +60,6 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
                     _newsResult.value =
                         NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
                 }
-
-//            if (allArticles.isEmpty()) {
-//                _newsResult.value = NewsUiState.Loading
-//            }
-//            try {
-//                val response = newsRepository.getNewsSuspendly(page = currentPage)
-//                allArticles.clear()
-//                allArticles.addAll(response.articles)
-//                _newsResult.value = NewsUiState.Success(NewsResponse(allArticles.toList()))
-//            } catch (e: Exception) {
-//                _newsResult.value = NewsUiState.Error(e.localizedMessage)
-//            } finally {
-//                isFetching = false
-//            }
         }
     }
 
@@ -90,18 +81,6 @@ class NewsViewModel @Inject constructor(private val newsRepository: NewsReposito
                             NewsUiState.Success(NewsResponse(articles = allArticles.toList()))
                     }
                 }
-//            Log.d("Pagination", "test")
-
-
-//            try {
-//                val response = newsRepository.getNewsSuspendly(page = currentPage)
-//                allArticles.addAll(response.articles)
-//                _newsResult.value = NewsUiState.Success(NewsResponse(allArticles.toList()))
-//            } catch (e: Exception) {
-//                currentPage--
-//            } finally {
-//                isFetching = false
-//            }
         }
     }
 }

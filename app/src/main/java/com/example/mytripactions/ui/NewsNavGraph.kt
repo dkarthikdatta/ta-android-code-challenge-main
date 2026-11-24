@@ -12,6 +12,7 @@ import com.example.mytripactions.vm.NewsViewModel
 fun NewsNavGraph(newsViewModel: NewsViewModel) {
     val navController = rememberNavController()
     val newsUiState by newsViewModel.newsResult.collectAsStateWithLifecycle()
+    val selectedArticle by newsViewModel.selectedArticle.collectAsStateWithLifecycle()
 
     NavHost(navController = navController, startDestination = "news_list") {
         composable("news_list") {
@@ -19,15 +20,17 @@ fun NewsNavGraph(newsViewModel: NewsViewModel) {
                 newsUiState = newsUiState,
                 onLoadMore = { newsViewModel.loadMore() },
                 onArticleClick = { article ->
-                    newsViewModel.selectedArticle = article
+                    newsViewModel.selectArticle(article)
                     navController.navigate("news_detail")
-                })
+                }
+            )
         }
         composable("news_detail") {
-            val article = newsViewModel.selectedArticle
-            if (article != null) {
+            selectedArticle?.let { article ->
                 NewsDescriptionScreen(
-                    article = article, onBack = { navController.popBackStack() })
+                    article = article,
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
     }
